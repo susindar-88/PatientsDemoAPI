@@ -23,8 +23,6 @@ public class PatientsRepository : IPatientsRepository
         }
     }
 
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeletePatientAsync(int patientId)
     {
         try

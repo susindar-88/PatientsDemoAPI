@@ -23,17 +23,17 @@ public class PatientsController : ControllerBase
         return patients;
     }
 
-    [HttpPost(Name = "UpdatePatient")]
+    [HttpPost(Name = "AddPatient")]
     public async Task<bool> Post(Patient patient)
     {
-        var isSuccess  = await _patientsRepository.UpdatePatientAsync(patient);
+        var isSuccess  = await _patientsRepository.AddPatientAsync(patient);
         return isSuccess;
     }
 
-    [HttpPut(Name = "AddPatient")]
+    [HttpPut(Name = "UpdatePatient")]
     public async Task<bool> Put(Patient patient)
     {
-        var isSuccess  = await _patientsRepository.AddPatientAsync(patient);
+        var isSuccess  = await _patientsRepository.UpdatePatientAsync(patient);
         return isSuccess;
     }
 
