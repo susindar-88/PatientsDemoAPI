@@ -1,4 +1,5 @@
 using APIForBlazorApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APIForBlazorApp.Controllers;
@@ -17,6 +18,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpGet(Name = "GetPatients")]
+    [Authorize(Roles ="Administrator,User")]
     public async Task<IEnumerable<Patient>> Get()
     {
         var patients  = await _patientsRepository.GetPatientsAsync();
@@ -24,6 +26,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpPost(Name = "AddPatient")]
+    [Authorize(Roles ="Administrator")]
     public async Task<bool> Post(Patient patient)
     {
         var isSuccess  = await _patientsRepository.AddPatientAsync(patient);
@@ -31,6 +34,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpPut(Name = "UpdatePatient")]
+    [Authorize(Roles ="Administrator")]
     public async Task<bool> Put(Patient patient)
     {
         var isSuccess  = await _patientsRepository.UpdatePatientAsync(patient);
@@ -38,6 +42,7 @@ public class PatientsController : ControllerBase
     }
 
     [HttpDelete(Name = "DeletePatient")]
+    [Authorize(Roles ="Administrator")]
     public async Task<IActionResult> Delete(int patientID)
     {
         var isSuccess  = await _patientsRepository.DeletePatientAsync(patientID);

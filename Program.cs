@@ -1,7 +1,9 @@
+using System.Text;
 using APIForBlazorApp.Controllers.Repositories;
 using APIForBlazorApp.Models.DBContexts;
-using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +26,27 @@ builder.Services.AddCors(options =>
                       });
 });
 
+builder.Services.AddAuthentication(s =>
+{
+    s.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    s.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(s =>
+    {
+        s.RequireHttpsMetadata = false;
+
+        s.SaveToken = true;
+        s.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtAuthManager.SECRET)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
 builder.Services.AddControllers();
+builder.Services.AddSingleton<UserAccountService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -43,6 +65,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("MyAllowSpecificOrigins");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
